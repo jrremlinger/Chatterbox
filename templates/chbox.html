@@ -89,8 +89,10 @@
 		});
 
 		socket.on('my response', function(response) {
-			console.log(response);
-			$('#chatbox').empty();
+			if (response.length > 0) {
+				console.log(response);
+				$('#chatbox').empty();
+			}
 
 			for (message of response) {
 				if (typeof message.user !== typeof(undefined)) {
