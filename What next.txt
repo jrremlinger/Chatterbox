@@ -1,0 +1,7 @@
+Maybe make it a little prettier?
+
+Add commands somehow for things like 
+resetting the chat and shit. Idk how to do this, maybe if 
+somehow I can check for a certain IP.
+
+Move shit into static files.

@@ -29,6 +29,7 @@
 			margin: 1em;
 			padding: 0.5em;
 			border: 1px solid;
+			overflow: auto;
 		}
 
 		form {
@@ -97,6 +98,7 @@
 			for (message of response) {
 				if (typeof message.user !== typeof(undefined)) {
 					$('#chatbox').append(`<div><b>${message.user}</b>: ${message.msg}`);
+					$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
 				}
 			}
 		});
