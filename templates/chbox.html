@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatterbox</title>
+	<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+	<style>
+		*,
+		*::after,
+		*::before {
+			margin: 0;
+			padding: 0;
+			/* border: 0 none; */
+			/* outline: none; */
+			box-sizing: border-box;
+			font-family: monospace;
+		}
+		body {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+		}
+
+		#chatbox {
+			width: 85%;
+			height: 17em;
+			margin: 1em;
+			padding: 0.5em;
+			border: 1px solid;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-around;
+		}
+
+		form * {
+			margin: 1em;
+			padding: 0.5em;
+		}
+
+		@media screen and (min-width: 550px) {
+			form {
+				flex-direction: row;
+			}
+		}
+	</style>
+	
+</head>
+<body>
+	<div id="chatbox">
+		<i style="text-decoration: underline;">The start of a fresh chat! Make yourself at home :)</i>
+	</div>
+	
+	<form action="" method="POST">
+		<input type="text" class="username" placeholder="Username">
+		<input type="text" class="message" placeholder="Message">
+		<input type="submit" value="Send">
+	</form>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
+	<script type="text/javascript" defer>
+		var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+		socket.on('connect', function() {
+			socket.emit('my event', {
+				"data": "User Connected"
+			});
+			
+			var form = $('form').on('submit', function(e) {
+				e.preventDefault();
+				let user = $('input.username').val();
+				let msg = $('input.message').val();
+
+				if (user !== "" && msg !== "" && user[0] !== ' ' && msg[0] !== ' ') {
+					socket.emit('my event', {
+						"user": user,
+						"msg": msg
+					});
+				}
+
+				$('input.message').val('').focus();
+			});
+		});
+
+		socket.on('my response', function(response) {
+			console.log(response);
+			$('#chatbox').empty();
+
+			for (message of response) {
+				if (typeof message.user !== typeof(undefined)) {
+					$('#chatbox').append(`<div><b>${message.user}</b>: ${message.msg}`);
+				}
+			}
+		});
+	</script>
+	</body>
+</html>
