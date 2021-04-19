@@ -4,11 +4,6 @@ import secrets
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
-print(
-	"\n------------------------\n" + "Secret Key: " +
-	app.config['SECRET_KEY'] +
-	"\n------------------------\n"
-)
 socketio = SocketIO(app)
 
 f = open('log.txt', 'r')
@@ -52,4 +47,9 @@ def handle_my_event(e_json, methods = ['GET', 'POST']):
 	print(log)
 
 if __name__ == '__main__':
+	print(
+		"\n------------------------\n" + "Secret Key: " +
+		app.config['SECRET_KEY'] +
+		"\n------------------------\n"
+	)
 	socketio.run(app, host = '0.0.0.0', debug = True)
