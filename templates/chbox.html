@@ -17,10 +17,16 @@
 			box-sizing: border-box;
 			font-family: monospace;
 		}
+		
 		body {
 			display: flex;
 			align-items: center;
 			flex-direction: column;
+		}
+		
+		h2 {
+			font-size: 1.8em;
+			margin-top: 0.5em;
 		}
 
 		#chatbox {
@@ -53,6 +59,7 @@
 	
 </head>
 <body>
+	<h2>Chatterbox</h2>
 	<div id="chatbox">
 		<i style="text-decoration: underline;">The start of a fresh chat! Make yourself at home :)</i>
 	</div>
@@ -65,23 +72,26 @@
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-	<script type="text/javascript" defer>
+	<script type="text/javascript">let user_id = "{{ key }}"</script>
+	<script type="text/javascript">
 		var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 		socket.on('connect', function() {
 			socket.emit('my event', {
-				"data": "User Connected"
+				'data': 'User Connected',
+				'session_id': user_id
 			});
 			
 			var form = $('form').on('submit', function(e) {
 				e.preventDefault();
-				let user = $('input.username').val();
+				let username = $('input.username').val();
 				let msg = $('input.message').val();
 
-				if (user !== "" && msg !== "" && user[0] !== ' ' && msg[0] !== ' ') {
+				if (username !== "" && msg !== "" && username[0] !== ' ' && msg[0] !== ' ') {
 					socket.emit('my event', {
-						"user": user,
-						"msg": msg
+						'session_id': user_id,
+						'user': username,
+						'msg': msg
 					});
 				}
 
@@ -91,15 +101,23 @@
 
 		socket.on('my response', function(response) {
 			if (response.length > 0) {
-				console.log(response);
+				// console.log(response);
 				$('#chatbox').empty();
-			}
 
-			for (message of response) {
-				if (typeof message.user !== typeof(undefined)) {
-					$('#chatbox').append(`<div><b>${message.user}</b>: ${message.msg}`);
-					$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+				for (message of response) {
+					if (typeof message.user !== typeof(undefined)) {
+						$('#chatbox').append(`<div><b>${message.user}</b>: ${message.msg}`);
+						$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+					}
 				}
+			}
+			else {
+				$('#chatbox').empty();
+				$('#chatbox').append(`
+					<i style="text-decoration: underline;">
+						The start of a fresh chat! Make yourself at home :)
+					</i>`
+				)
 			}
 		});
 	</script>

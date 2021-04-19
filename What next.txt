@@ -5,3 +5,5 @@ resetting the chat and shit. Idk how to do this, maybe if
 somehow I can check for a certain IP.
 
 Move shit into static files.
+
+Make users unable to put < in name or messages
