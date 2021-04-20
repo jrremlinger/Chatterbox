@@ -11,16 +11,12 @@ with open('log.txt', 'r') as f:
 	log = eval(f.read())
 
 @app.route('/')
-def main(admin = False):
-	# If the user is an admin, set their session ID to be the app's secret key
-	if admin:
-		return render_template('chbox.html', key = app.config['SECRET_KEY'])
-	else:
-		return render_template('chbox.html', key = secrets.token_urlsafe(16))
+def main():
+	return render_template('chatterbox.html', key = secrets.token_urlsafe(16), script = "script.js")
 
 @app.route('/' + app.config['SECRET_KEY'])
 def admin():
-	return main(True)
+	return render_template('chatterbox.html', key = app.config['SECRET_KEY'], admin = True)
 
 # Sends useful info back to the console
 def response_callback(data):
@@ -45,6 +41,17 @@ def handle_my_event(e_json, methods = ['GET', 'POST']):
 				with open('log.txt', 'r') as f:
 					for msg in eval(f.read()):
 						log.append(msg)
+			elif e_json['msg'].startswith('/del ', 0, 5):
+				log.pop()
+				x = 0
+				flag = False
+				try:
+					x = int(e_json['msg'].split(' ')[1])
+				except ValueError:
+					flag = True
+				finally:
+					if not flag:
+						log.pop(x)
 
 	# Backup chat log to file
 	with open('log.txt', 'w') as f:

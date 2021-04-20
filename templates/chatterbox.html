@@ -9,7 +9,12 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
-	<h2>Chatterbox</h2>
+	<h2>
+		Chatterbox
+		{% if admin %}
+			<span style="color: #424242; font-size: 12px;"> Admin</span>
+		{% endif %}
+	</h2>
 	<div id="chatbox"></div>
 	<form action="" method="POST">
 		<input type="text" class="username" placeholder="Username">
@@ -18,7 +23,35 @@
 	</form>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-	<script type="text/javascript">let user_id = "{{ key }}"</script>
+	<script type="text/javascript">let session_id = "{{ key }}"</script>
 	<script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+	{% if admin %}
+		<script type="text/javascript">
+			getFormData = function(id) {
+				return $(`input.${id}`).val();
+			}
+
+			loadResponse = function(log) {
+				if (log.length > 0) {
+					$('#chatbox').empty();
+
+					for (i in log) {
+						if (typeof log[i].user !== typeof(undefined)) {
+							$('#chatbox').append(`<div><b>${log[i].user} [${i}]</b>: ${log[i].msg}`);
+							$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+						}
+					}
+				}
+				else {
+					$('#chatbox').empty();
+					$('#chatbox').append(`
+						<i style="text-decoration: underline;">
+							The start of a fresh chat! Make yourself at home :)
+						</i>`
+					);
+				}
+			}
+		</script>
+	{% endif %}
 	</body>
 </html>
