@@ -12,7 +12,7 @@ with open('log.txt', 'r') as f:
 
 @app.route('/')
 def main():
-	return render_template('chatterbox.html', key = secrets.token_urlsafe(16), script = "script.js")
+	return render_template('chatterbox.html', key = secrets.token_urlsafe(16))
 
 @app.route('/' + app.config['SECRET_KEY'])
 def admin():
@@ -45,6 +45,8 @@ def handle_my_event(e_json, methods = ['GET', 'POST']):
 				log.pop()
 				x = 0
 				flag = False
+
+				# I think this can be simplified and have its 'finally' removed, research first though
 				try:
 					x = int(e_json['msg'].split(' ')[1])
 				except ValueError:
