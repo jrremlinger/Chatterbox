@@ -42,7 +42,7 @@ let loadResponse = function(log) {
 		for (i in log) {
 			if (typeof log[i].user !== typeof(undefined)) {	// Makes sure the message has a username, so join notifications and other non-message data isn't printed
 				$('#chatbox').append(`<div><b>${log[i].user}</b>: ${log[i].msg}`);
-				$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);	// Scrolls to printed message, in the context of this loop it keeps users stay scrolled the newest messages.
+				$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);	// Scrolls to the bottom of the chatbox
 			}
 		}
 	}
